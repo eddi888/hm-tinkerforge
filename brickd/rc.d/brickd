@@ -1,0 +1,49 @@
+#!/bin/sh
+
+ADDONNAME=brickd
+ADDONDIR=/usr/local/addons/${ADDONNAME}
+#WWWDIR=/usr/local/etc/config/addons/www/${ADDONNAME}
+RCDDIR=/usr/local/etc/config/rc.d
+
+case "$1" in
+
+  ""|start)
+    cd $ADDONDIR
+    ./brickd &
+    ;;
+
+  stop)
+    kill `cat /var/run/brickd.pid`
+    ;;
+
+  restart|reload)
+    kill `cat /var/run/brickd.pid`
+    sleep 1
+    cd $ADDONDIR
+    ./brickd &
+    ;;
+
+  info)
+    echo "Info: <b>(Inoffical) brickd</b>"
+    echo "Version: 0.1"
+    echo "Name: brickd"
+    echo "Operations: uninstall restart"
+    ;;
+
+  uninstall)
+	kill `cat /var/run/brickd.pid`
+	
+    rm -rf ${ADDONDIR}
+    #rm -rf ${WWWDIR}
+    rm -f ${RCDDIR}/${ADDONNAME}
+    ;;
+
+  *)
+    echo "Usage: brickd {start|stop|restart|info|uninstall}" >&2
+    exit 1
+    ;;
+
+esac
+
+exit $?
+
